@@ -100,24 +100,52 @@ lo correcto para un hackathon, no para producción real).
 
 `.env.example`: `DATABASE_URL=` y `PORT=`, sin valores reales.
 
-### 3. `/client`
+### 3. `/client` — con el stack de UI ya decidido
+
+TypeScript en el client (el server queda en JS): es el camino feliz de shadcn/ui, sin flags ni
+blocks que vienen en `.tsx` y no encajan.
 
 ```bash
-npm create vite@latest client -- --template react
+npm create vite@latest client -- --template react-ts
 npm install --workspace client
+npm i tailwindcss @tailwindcss/vite --workspace client
+npm i -D @types/node --workspace client
 ```
 
-`vite.config.js`:
+- `src/index.css`: reemplazar todo el contenido por `@import "tailwindcss";` — Tailwind v4 no usa
+  PostCSS ni `tailwind.config.js`.
+- `tsconfig.json` **y** `tsconfig.app.json`: agregar `baseUrl: "."` y `paths: {"@/*": ["./src/*"]}`
+  (shadcn lo necesita en los dos archivos, no en uno).
+- `vite.config.ts`:
 
-```js
+```ts
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
+  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
   build: { outDir: '../server/public', emptyOutDir: true },
   server: { proxy: { '/api': 'http://localhost:3000' } },
 });
 ```
 
-`src/api/client.js`: un único helper que hace `fetch('/api/...')` — path relativo, sin URL base, sin
+Después, componentes y bloques:
+
+```bash
+npx shadcn@latest init
+npx shadcn@latest add button card table dialog badge input calendar tabs sonner chart skeleton
+npx shadcn@latest add sidebar-07 dashboard-01 login-03
+```
+
+Los tres bloques del final son la razón por la que se elige este stack: `sidebar-07` es el shell de
+toda la app, `dashboard-01` ya trae sidebar + charts + tabla (o sea, casi toda la pantalla de
+dashboard del edificio) y `login-03` sirve de base para el "elegir vecino".
+
+**Tema (10 min, el mayor retorno visual de todo el día)**: generar una paleta en
+[tweakcn.com](https://tweakcn.com) — verde/teal va con la temática de energía — y pegar el bloque
+`:root` / `.dark` en `src/index.css`. Eso saca a la app del slate-blue default de shadcn, que es lo
+que la hace ver "de plantilla". Fuentes en el mismo bloque (`--font-sans`): Inter Tight o Geist para
+títulos, Inter para cuerpo, vía una línea de Google Fonts.
+
+`src/api/client.ts`: un único helper que hace `fetch('/api/...')` — path relativo, sin URL base, sin
 env var. Todo el resto del client llama funciones de acá.
 
 Confirmar que `npm run build` en la raíz deja archivos en `server/public/` antes de seguir.

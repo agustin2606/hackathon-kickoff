@@ -79,6 +79,34 @@ inesperado.
 - No agregar validación, manejo de errores o abstracciones para casos que no van a pasar en un
   demo de 6hs. Tres líneas parecidas están bien; no hace falta una función genérica para eso.
 
+## UI — el stack está decidido, no se rediscute
+
+"Diseño visualmente atractivo" es 1 de los 5 criterios de evaluación, y lo juzga gente no técnica
+mirando la app corriendo. Por eso el stack está fijado de antemano (comandos exactos en
+`scaffold-monorepo`) en vez de decidirse en vivo:
+
+- **Tailwind v4** (sin PostCSS, sin `tailwind.config.js`) + **shadcn/ui** + **Lucide** para iconos
+  (viene con shadcn, no se instala nada) + **Recharts** para gráficos, vía el componente `chart` de
+  shadcn — toma los colores de `var(--chart-1..5)`, así que los gráficos heredan el tema solos.
+- **El tema es un bloque de tokens pegado de [tweakcn.com](https://tweakcn.com)**, no una escala de
+  spacing escrita a mano. Los jueces no ven una escala de spacing; ven 9 pantallas consistentes o
+  no, y eso ya lo garantiza la librería. Lo único que hay que aportar es el color de acento propio.
+- **Nada de valores ad-hoc**: colores y radios salen de los tokens del tema (`bg-primary`,
+  `text-muted-foreground`), nunca un `#3b82f6` suelto ni un `p-[13px]`. Es lo que hace que 3 personas
+  produzcan pantallas que parecen del mismo producto.
+- **Componentes de shadcn antes de escribir uno nuevo.** Si hace falta algo que no está,
+  `npx shadcn@latest add <componente>` antes de inventarlo.
+- **Todas las pantallas dentro del mismo shell** (`sidebar-07`). Shell uniforme = app que se ve
+  uniforme, gratis.
+- **Sin pantallas en blanco**: `skeleton` mientras carga, un estado vacío con texto y un icono
+  cuando no hay datos, `sonner` (toast) en cada acción que escribe. Un panel vacío se lee como una
+  feature rota cuando un juez hace click.
+- Para el dashboard: **el número con su etiqueta en castellano llano gana al gráfico con ejes**
+  ("Ahorro del edificio este mes: $X"). Fila de KPIs arriba, gráficos abajo.
+
+El plugin oficial `frontend-design` viene habilitado en el repo (`.claude/settings.json`) — le da a
+Claude criterio de diseño sin que haya que pedírselo.
+
 ## Git / PRs
 
 - Una rama por ticket del backlog: `lane-a/reservas-crud`, `lane-b/calculo-costo`,

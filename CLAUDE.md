@@ -47,7 +47,9 @@ la vez, Lane C nunca escribe mocks, y no hay una fase de integración donde todo
 ## Stack
 
 - Backend: Node/Express 4 + Prisma + Postgres (Railway addon).
-- Frontend: Vite + React.
+- Frontend: Vite + React + **TypeScript** (sólo el client; el server queda en JS).
+- UI: Tailwind v4 + shadcn/ui + Lucide + Recharts, con un tema de tokens propio. El stack está
+  decidido y no se rediscute en vivo — ver `STANDARDS.md` §UI.
 - **Un solo servicio**: Express sirve la API bajo `/api/*` y el build de React como estáticos desde
   `server/public`. Una sola URL, cero CORS en producción, sin `VITE_API_URL` — el client siempre
   llama `/api/...` relativo (en dev, vía el proxy de Vite). Detalle en `scaffold-monorepo`.
