@@ -3,9 +3,9 @@
 //
 // `npm run build | grep error` exits with grep's status, not npm's, so a failed build reports as
 // success and a PR gets opened on a broken branch. Same for `npm test | tail`, `npx tsc | grep
-// error`, `npx vite build | head`. Adapted from the equivalent guard in the team's `dev-flow`
-// plugin (mvnw/pnpm there, npm/npx/prisma here) — this is the single most expensive mistake
-// available in a hackathon with no test suite backstopping the build gate.
+// error`, `npx vite build | head`. This is the single most expensive mistake available in a
+// hackathon with no test suite backstopping the build gate, and prose in a skill has a poor record
+// against it — so it is a hook.
 //
 // The fix carried in the denial is always the same shape: redirect to a log, echo the exit code,
 // then grep the log.
@@ -20,9 +20,11 @@ const fs = require("fs");
 
 const SHELL_TOOLS = new Set(["Bash", "PowerShell"]);
 
-// The commands whose exit code is the verdict.
+// The commands whose exit code is the verdict. Deliberately does NOT include a bare
+// `node <file>.js`: piping a utility script (a seed, a one-off) into grep is legitimate, and
+// `npm start` already covers booting the server.
 const GATE =
-  /(?:^|[;&|(]\s*|\s)(?:npm\s+(?:run\s+)?(?:build|test|lint|start)|npx\s+(?:tsc|vite|prisma|eslint)|node\s+\S+\.js)\b/;
+  /(?:^|[;&|(]\s*|\s)(?:npm\s+(?:run\s+)?(?:build|test|lint|start)|npx\s+(?:tsc|vite|prisma|eslint))\b/;
 
 // Pipe targets that only read text — piping into these throws the exit code away.
 const READER =
@@ -67,8 +69,8 @@ try {
       "exit code que se reporta es el del lector, no el del comando real, así que un build roto " +
       "reporta como éxito.\n\n" +
       "Redirigir a un log, chequear el código, después grepear el log:\n\n" +
-      "  npm run build --prefix server > /tmp/gate-server.log 2>&1; echo EXIT=$?\n" +
-      "  grep -iE 'error' /tmp/gate-server.log | tail -20"
+      "  npm run build --workspace client > /tmp/gate-client.log 2>&1; echo EXIT=$?\n" +
+      "  grep -iE 'error' /tmp/gate-client.log | tail -20"
   );
 } catch {
   process.exit(0);

@@ -52,8 +52,8 @@ Si el evento exige que el repo sea público, crearlo público de entrada — cam
 - **El deploy a Railway se hace temprano, con el esqueleto vacío.** Descubrir un problema de deploy a
   H5:30 es el error más caro posible en un hackathon — mejor descubrirlo a H1:15 cuando no hay nada
   que perder.
-- **Sin loop de revisión de negocio ni de tests.** dev-flow (el harness real del equipo en el
-  trabajo) tiene rondas de recheck y suites completas porque protege repos que viven años. Acá el
+- **Sin loop de revisión de negocio ni de tests.** Un pipeline maduro de verdad tiene rondas de
+  recheck y suites completas porque protege repos que viven años. Acá el
   código vive 6 horas y se evalúa por impacto/demo/diseño, no por robustez — una sola pasada de
   review alcanza.
 - **Los stubs van antes que la lógica.** Lane C llama a la API real desde su primer ticket en vez de
