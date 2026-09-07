@@ -37,17 +37,21 @@ Timeline completo en `RUNBOOK.md`. Resumen:
 - **Lane A — Backend Core**: vecinos/vehículos, disponibilidad del cargador, reservas.
 - **Lane B — Backend Billing/Sessions**: login QR simulado, registro de consumo, cálculo de costo,
   estado de cuenta, endpoints de dashboard/agregación.
-- **Lane C — Frontend**: todas las pantallas, contra `specs/api-contract.md` — no espera a que A/B
-  terminen de implementar, solo a que el contrato esté fijado en el spec.
+- **Lane C — Frontend**: todas las pantallas, contra la API real desde el primer minuto.
 
-El contrato de API se fija en el spec (paso 1), no se descubre implementando — es lo que permite que
-las 3 lanes arranquen a la vez sin bloquearse entre sí.
+El contrato de API se fija en el spec (paso 1), no se descubre implementando. Y el **ticket #1 de
+Lane A y de Lane B son los stubs**: todos sus endpoints existiendo y devolviendo data hardcodeada
+con el shape del contrato, mergeados en la primera hora. Entre las dos cosas, las 3 lanes arrancan a
+la vez, Lane C nunca escribe mocks, y no hay una fase de integración donde todo se conecta de golpe.
 
 ## Stack
 
-- Backend: Node/Express + Prisma + Postgres (Railway addon).
+- Backend: Node/Express 4 + Prisma + Postgres (Railway addon).
 - Frontend: Vite + React.
-- Monorepo: `/server` y `/client` en un solo repo.
+- **Un solo servicio**: Express sirve la API bajo `/api/*` y el build de React como estáticos desde
+  `server/public`. Una sola URL, cero CORS en producción, sin `VITE_API_URL` — el client siempre
+  llama `/api/...` relativo (en dev, vía el proxy de Vite). Detalle en `scaffold-monorepo`.
+- Monorepo con npm workspaces: `/server` y `/client` en un solo repo, un `npm install` en la raíz.
 - Auth: sin password — el usuario se elige de una lista de vecinos preseed.
 - QR: simulado — el QR codifica el id del vecino; se "escanea" con una lib JS o se ingresa a mano
   como fallback.

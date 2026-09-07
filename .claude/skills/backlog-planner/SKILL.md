@@ -22,12 +22,29 @@ Lanes (fijas, ver `CLAUDE.md`):
   estado de cuenta, dashboard/agregación.
 - **Lane C — Frontend**: pantallas, contra `specs/api-contract.md`.
 
-## Regla de dependencias — minimizar bloqueos
+## Regla de oro: el ticket #1 de Lane A y de Lane B son los stubs
 
-El contrato de API ya está fijado en el spec, así que Lane C **no depende de que A/B implementen**
-— solo depende de que el contrato exista (ya existe). Lane C puede construir sus pantallas contra el
-contrato desde el ticket 1, con datos mock que respeten el shape documentado, y recién en la fase de
-integración (ver `RUNBOOK.md`) conectarlas al backend real.
+Antes que cualquier ticket de lógica real, **cada lane de backend entrega todos sus endpoints del
+contrato como stubs**: la ruta existe, responde el status correcto y devuelve data hardcodeada con
+el shape exacto de `specs/api-contract.md`. Sin base de datos, sin validación, sin lógica. Es ~20
+minutos de trabajo por lane y se mergea en la primera hora.
+
+Por qué esto es lo primero, siempre:
+
+- **Lane C nunca usa mocks.** Llama a la API real desde su primer ticket y la data se vuelve real
+  sola, a medida que A y B reemplazan cada stub por la implementación. Sin capa de mocks que
+  mantener, sin divergencia entre el mock y la respuesta real.
+- **La fase de integración deja de ser un riesgo.** Pasa de "conectar 9 pantallas al backend en 30
+  minutos y rezar" a "revisar lo que quedó" — porque todo estuvo conectado desde la hora 1.
+- **Un shape mal entendido aparece a la hora 1, no a la hora 5**, cuando todavía se arregla barato.
+
+Estos dos tickets no tienen dependencias y bloquean a todo lo demás: van primeros en `BACKLOG.md` y
+se dicen en voz alta cuando están mergeados.
+
+## Resto de las dependencias — minimizar bloqueos
+
+Con los stubs arriba, Lane C **no depende de nadie**: cada pantalla se construye contra el endpoint
+real (stub o implementado, le da igual, el shape es el mismo).
 
 Dependencias reales a marcar:
 
@@ -59,9 +76,11 @@ Tabla markdown, una fila por ticket:
 ```markdown
 | # | Lane | Ticket | Depende de | Criterio de aceptación |
 |---|---|---|---|---|
-| 1 | A | Modelo + CRUD de vecinos y vehículos | — | Se puede crear un vecino con su vehículo y listarlos vía API |
-| 2 | A | Modelo de horarios del cargador + endpoint de disponibilidad | #1 | GET /availability devuelve los slots libres y ocupados |
-| 3 | A | Reservas: crear + validar superposición | #2 | POST /reservations rechaza con 409 si el horario se solapa |
+| 1 | A | **Stubs de todos los endpoints de Lane A** | — | Cada ruta del contrato responde el shape correcto con data hardcodeada |
+| 2 | B | **Stubs de todos los endpoints de Lane B** | — | Ídem, para las rutas de Lane B |
+| 3 | A | Modelo + CRUD real de vecinos y vehículos | #1 | Se puede crear un vecino con su vehículo y listarlos vía API |
+| 4 | A | Modelo de horarios del cargador + disponibilidad real | #3 | GET /api/availability devuelve los slots libres y ocupados de la DB |
+| 5 | A | Reservas: crear + validar superposición | #4 | POST /api/reservations rechaza con 409 si el horario se solapa |
 | ... | ... | ... | ... | ... |
 ```
 

@@ -19,18 +19,19 @@ Preferir la URL pública de Railway si ya está deployada y actualizada — es l
 jueces, así que es lo que hay que probar. Si todavía no hay redeploy con los últimos cambios de
 integración, levantar local:
 
-```bash
-# server
-cd server && npm run build > /tmp/demo-server-build.log 2>&1; echo EXIT=$?
-npm run dev &   # o el script que levante el server
+Un solo servicio, una sola URL — Express sirve la API y el build de React (ver
+`scaffold-monorepo`). Local:
 
-# client
-cd client && npm run build > /tmp/demo-client-build.log 2>&1; echo EXIT=$?
-npm run preview &   # servir el build de producción, no el dev server con hot-reload
+```bash
+npm run build > /tmp/demo-build.log 2>&1; echo EXIT=$?   # build del client → server/public
+grep -iE 'error' /tmp/demo-build.log | tail -20
+npm start &                                              # :3000, API + app
+sleep 4 && curl -s http://localhost:3000/api/health
 ```
 
-Esperar a que `GET /health` del server responda antes de seguir. Confirmar la URL final (Railway o
-local) antes del paso 3.
+Probar **el build de producción, no el dev server con hot-reload** — es lo que van a ver los jueces.
+Esperar el `{"status":"ok"}` antes de seguir, y confirmar la URL final (Railway o local) antes del
+paso 3.
 
 ## 2. Sembrar datos de demo
 

@@ -34,6 +34,11 @@ Prefijo de lane según `STANDARDS.md`. Nunca commitear directo a `main`.
 - **El código vecino**, si ya existe: misma estructura de carpetas, mismos nombres, mismo estilo.
   Código que se lee como el de al lado pasa review; código sólo correcto, no.
 
+**Si el ticket reemplaza un stub** (los endpoints de Lane A/B nacen como stubs con data hardcodeada,
+ver `backlog-planner`): el shape de la respuesta **no cambia**, sólo pasa a salir de la base. Lane C
+ya está consumiendo ese endpoint en vivo — cambiarle el shape acá le rompe la pantalla sin aviso. Si
+el shape tiene que cambiar de verdad, es un cambio de contrato: aplica la regla de `STANDARDS.md`.
+
 ## 4. Implementar — sólo el ticket
 
 Nada más que el criterio de aceptación. Sin tablas extra, sin endpoints no pedidos, sin refactors
@@ -45,15 +50,17 @@ actualizar `specs/api-contract.md` en el mismo PR **y avisar al equipo**, según
 `STANDARDS.md` §"Contrato de API". La lane que consume esa ruta se rompe si el shape cambia sin
 aviso — es el error más caro del día.
 
-## 5. Gate de build, en verde, sin pipes
+## 5. Gate, en verde, sin pipes
 
-```bash
-npm run build --prefix server > /tmp/gate-server.log 2>&1; echo EXIT=$?
-grep -iE 'error' /tmp/gate-server.log | tail -20
-```
+Según lo que tocaste — los comandos exactos están en `STANDARDS.md` §Verificación:
 
-Ídem `client` si se tocó frontend. Nunca `npm run build | grep ...` — el exit code que vuelve es el
-del lector, no el del build; un hook del proyecto lo deniega.
+- **Client**: `npm run build --workspace client` redirigido a un log.
+- **Server**: no hay compilación que valide nada en JS plano. Levantar el server, `curl`
+  `/api/health`, y `curl` **la ruta que tocaste** (happy path + la request que debe fallar si el
+  ticket tenía una regla de negocio). Bajarlo después.
+
+Nunca `npm run build | grep ...` — el exit code que vuelve es el del lector, no el del build; un
+hook del proyecto lo deniega.
 
 ## 6. PR
 
