@@ -26,7 +26,7 @@ const GATE =
 
 // Pipe targets that only read text — piping into these throws the exit code away.
 const READER =
-  /\|\s*(?:grep|egrep|fgrep|rg|tail|head|more|less|findstr|sed|awk|cat|sort|uniq|wc|Select-String|Select-Object|Out-String|Out-Host|Format-List|Format-Table|ForEach-Object|%|\?|Where-Object)\b/i;
+  /\|\s*(?:grep|egrep|fgrep|rg|tail|head|more|less|findstr|sed|awk|cat|sort|uniq|wc|tee|Select-String|Select-Object|Out-String|Out-Host|Format-List|Format-Table|ForEach-Object|%|\?|Where-Object)\b/i;
 
 // A pipe inside quotes is not a shell pipe. Strip quoted spans before looking for one.
 function stripQuoted(text) {

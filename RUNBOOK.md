@@ -6,7 +6,7 @@ del evento. Cada fase nombra qué skill correr — el detalle de cada una vive e
 
 | Hora | Fase | Qué correr | Quién |
 |---|---|---|---|
-| H0:00–0:45 | Spec | `sdd-spec` skill → `specs/PRD.md` + `specs/api-contract.md` + `specs/data-model.md` | Todo el equipo, una sola sesión |
+| H0:00–0:45 | Spec | Pasar el modelo de la sesión a **opus** (`/model`), correr `sdd-spec` skill → `specs/PRD.md` + `specs/api-contract.md` + `specs/data-model.md`, volver al modelo default después del gate | Todo el equipo, una sola sesión |
 | — | **GATE** | El equipo lee y aprueba el spec. Nada de código antes de esto — es la regla del evento. | Todo el equipo |
 | H0:45–1:00 | Backlog | `backlog-planner` skill → `BACKLOG.md` + issues de GitHub con lane y dependencias | Todo el equipo |
 | H1:00–1:15 | Scaffold + deploy inicial | `scaffold-monorepo` skill → esqueleto `/server` + `/client`, primer deploy a Railway (aunque esté vacío) | Una persona, comparte el repo |
@@ -18,7 +18,9 @@ del evento. Cada fase nombra qué skill correr — el detalle de cada una vive e
 ## Por qué este orden
 
 - **El spec va primero y es un gate real**, no un trámite: define el contrato de API que permite que
-  Lane C arranque el mismo minuto que A y B, en vez de esperar a que el backend exista.
+  Lane C arranque el mismo minuto que A y B, en vez de esperar a que el backend exista. Es también
+  el único paso que justifica pagar opus: un error acá se propaga a 3 lanes durante 4 horas,
+  mientras que el resto del día es ejecución mecánica donde el modelo default alcanza.
 - **El deploy a Railway se hace temprano, con el esqueleto vacío.** Descubrir un problema de deploy a
   H5:30 es el error más caro posible en un hackathon — mejor descubrirlo a H1:15 cuando no hay nada
   que perder.

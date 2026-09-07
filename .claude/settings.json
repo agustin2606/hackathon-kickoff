@@ -1,4 +1,31 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(npm init:*)",
+      "Bash(npm create:*)",
+      "Bash(npx prisma:*)",
+      "Bash(npx vite:*)",
+      "Bash(node:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git pull:*)",
+      "Bash(git push:*)",
+      "Bash(git branch:*)",
+      "Bash(gh issue:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh label:*)",
+      "Bash(gh repo view:*)",
+      "Bash(railway:*)",
+      "Bash(curl:*)",
+      "Bash(playwright-cli:*)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {

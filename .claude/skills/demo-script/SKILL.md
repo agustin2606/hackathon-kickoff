@@ -54,7 +54,7 @@ playwright-cli snapshot
 playwright-cli fill e7 "12/09 10:00"    # ejemplo: reservar un horario
 playwright-cli click e9
 playwright-cli snapshot                 # confirmar que el horario reservado desaparece de disponibles
-playwright-cli screenshot --filename=/private/tmp/claude-501/-Users-agustin-Desktop-hackaton/*/scratchpad/demo-step-1.png
+playwright-cli screenshot --filename=./demo-assets/demo-step-1.png
 playwright-cli close
 ```
 

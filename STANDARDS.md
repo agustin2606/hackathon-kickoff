@@ -25,12 +25,23 @@ con la realidad del stack elegido — esto es un punto de partida, no una ley.
 Un archivo hace una cosa. Si un route file empieza a tener lógica de negocio no trivial, esa lógica
 va a `services/`.
 
+**`prisma/schema.prisma` lo tocan las dos lanes de backend** — es el archivo con más riesgo de
+conflicto del repo. Cada lane agrega sus modelos en su propia sección delimitada
+(`// --- Lane A ---`, `// --- Lane B ---`), nunca intercalados, y se hace `git pull` antes de
+empezar cada ticket que lo toque. Un conflicto acá a las 4hs cuesta más que los 10 segundos de
+disciplina.
+
 ## Contrato de API
 
 `specs/api-contract.md` es la fuente de verdad de rutas y shapes — no el código de ninguna lane.
 Si durante la implementación hace falta un campo o una ruta que el contrato no tiene: se actualiza
 `specs/api-contract.md` en el mismo PR y se avisa en el canal del equipo, no se improvisa en
 silencio — la lane que consume esa ruta se rompe si el shape cambia sin aviso.
+
+Cómo se avisa un cambio de contrato, concreto: (1) el cambio va en el mismo PR que lo necesita,
+(2) mensaje en el canal del equipo empezando con `CONTRATO:` y la ruta afectada, (3) el PR lleva
+`Contrato tocado: <sección>` en el body. Las 3 cosas, no una — las otras lanes corren en sesiones
+de Claude Code aisladas y no se enteran de nada que no les llegue por un humano.
 
 Forma de error, siempre:
 
