@@ -73,3 +73,5 @@ Si el evento exige que el repo sea público, crearlo público de entrada — cam
   (marcado como tal en `backlog-planner`).
 - Nunca saltear el gate de spec/backlog aunque el tiempo apriete — es una condición del evento, no
   una opción.
+
+<!-- Mimear integration test, safe to delete. -->
